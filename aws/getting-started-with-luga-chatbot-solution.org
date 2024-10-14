@@ -1,0 +1,29 @@
+* Getting Started with LUGA Chatbot Solution
+** Sean Lee, Sr. Application Architect, AWS Professional Servicss
+** Q&A
+*** AI Architecture growth: Monolith -> Micro-services
+**** https://naologic.com/business-app/apps
+*** Search Results: Production concurns, Performance, Pre-processing
+*** https://phoenix.arize.com vs . https://www.langchain.com/langsmith
+*** LangGraph vs. Bedrock Prompt Flow
+*** LangChain Expression Language (LCEL)
+*** 기대치 관리
+*** 오너십 유도
+*** 교육 세션
+** Language Understanding and Generation Assistant (LUGA)
+*** Overall Architecture
+*** Components of Chatbot
+**** Index Pipeline
+**** RAG
+**** Document Indexing
+**** Chain Architecture
+**** RAG Approach
+**** Choosing Embedding Model
+**** Chunking Strategy
+***** Chunk Size
+**** Model History
+**** Maintenance Perspective
+*** 3 months
+**** 1 Chatbot
+**** No Pre-processing
+***
