@@ -23,7 +23,9 @@
 ***** Chunk Size
 **** Model History
 **** Maintenance Perspective
-*** 3 months
+*** 3 months to 2 months
 **** 1 Chatbot
 **** No Pre-processing
+**** Multi indexing
+*** Amazon Kendra
 ***
