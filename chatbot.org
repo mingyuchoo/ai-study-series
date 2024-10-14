@@ -1,0 +1,26 @@
+* ChatBot
+** Build Processes
+1. Index Pipeline
+2. Retrieval Augmented Generation
+3. Evalutation Pipeline
+4. Application
+** Index Pipeline
+1. Knowledge base
+2. Pipelines: AWS Step Functions, AWS Lmabda, Amazon Titan Embeddings
+3. Index: Amazon OpenSearch
+** Retreval Augmented Generation
+1. User Queries: Application
+2. Retrieve Index: Amazon OpenSearch
+   - Document Indexing
+     1. Chunking
+        - Chunking Strategy: Parent, Lexical, Semantic
+        - Chunk Size
+     2. Embedding Model: Amazon Becrock Titan Multilingual, Cohere, Amazon Sagemaker Inference
+     3. Embedding
+     4. Indexing
+   - Chain Architecture
+3. RAG (Retrieval Augmented Generation)
+   - RAG Approach
+4. Foundation Model: Amazon Bedrock
+** Evaluation Pipeline
+** Application
