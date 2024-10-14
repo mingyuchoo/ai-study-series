@@ -1,0 +1,11 @@
+* Glossary
+** Algorithm
+** Neural Network
+** Artifical Intelligence (AI)
+** Machine Learning (ML)
+** Machine Vision
+** Natural Language Processing (NLP)
+** Deep Learning (DL)
+** Reinforcement Learning
+** Large Language Model (LLM)
+** Generative AI (Gen AI)
