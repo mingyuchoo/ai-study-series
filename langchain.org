@@ -1,0 +1,38 @@
+* LangChain
+** Component
+*** LangChain
+*** LangSmith
+*** LangGraph
+** LangChain
+*** ChatGPT
+**** 단점 -> 극복
+1. 정보 접근 제한 -> Vectorstore
+2. 토큰 제한 -> TextSplitter
+3. 환각 현상 -> Prompt
+**** 한계점 해결책
+1. Fine-tuning
+2. N-short Learning
+3. In-context Learning
+*** Components
+1. LLM (Language Models):
+   These are the core models that process natunal langauge, such as OpenAI's GPT, which LangChain interacts with.
+2. Prompt Templates:
+   A way to structure and format prompts sent to the language models, ensuring consistent interaction.
+3. Chain:
+   LangChain provides the ability to link together various components (models, APIs, functions) into a chain of operations that can automate complex tasks.
+4. Agents:
+   These components allow the model to take actions and make decisions, often involving interaction with other tools or APIs.
+5. Memory:
+   LangChain supports memory to store and retrieve information across sessions, allowing more personalized and coherent long-term interactions.
+6. Data Connectors:
+   LangChain provides integrations with databases, APIs, and other data soruces to facilitate access to external information.
+7. Tools and APIs:
+   LangChain can be extended with external tools, allowing language models to interact with code, databases, and more.
+*** Process
+1. Document Loader
+2. Text Splitter
+3. Embed to Vectorstore
+4. Vectorstore Retriever
+5. QA Chain
+** LangSmith
+** LangGraph

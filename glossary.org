@@ -9,6 +9,22 @@
 ** Reinforcement Learning
 ** Large Language Model (LLM)
 ** Generative AI (Gen AI)
-*** LangChain
-*** LangSmith
-*** LangGraph
+*** ChatGPT
+**** Vectorstore
+**** TextSplitter
+**** Prompt
+**** Fine-tuning
+**** N-short Learning
+**** In-context Learning
+**** LangChain
+**** Prompts
+**** Index
+**** Memory
+**** Chain
+**** Agents
+**** Process
+**** Document Loader
+**** Text Splitter
+**** Embed to Vectorstore
+**** Vectorstore Retriever
+**** QA Chain
