@@ -10,31 +10,21 @@
 ** Large Language Model (LLM)
 ** Generative AI (Gen AI)
 *** ChatGPT
-**** 단점 -> 극복
-1. 정보 접근 제한 -> Vectorstore
-2. 토큰 제한 -> TextSplitter
-3. 환각 현상 -> Prompt
-**** 한계점 해결책
-1. Fine-tuning
-2. N-short Learning
-3. In-context Learning
-** LangChain
-*** Components
-1. LLM:
-   ex) GPT-3.5, PALM-2, LLAMA, StableVicuna, WizardLM, MPT, ...
-2. Prompts:
-   components) Prompt Templates, Chat Prompt Template, Example Selections, Output Parsers
-3. Index:
-   ex) Document Loaders, Text Splitters, Vectorstores, Retrievers, ...
-4. Memory:
-   ex) ConversationBufferMemory, Entity Memory, Conver sation Knowledge Graph Memory, ...
-5. Chain:
-   ex) LLM Chain, Question Answering, Summarization, Retrieval Question/Answering, ...
-6. Agents:
-   ex) Custom Agent, Custom MultiAction Agent, Conversation Agent, ...
-*** Process
-1. Document Loader
-2. Text Splitter
-3. Embed to Vectorstore
-4. Vectorstore Retriever
-5. QA Chain
+**** Vectorstore
+**** TextSplitter
+**** Prompt
+**** Fine-tuning
+**** N-short Learning
+**** In-context Learning
+**** LangChain
+**** Prompts
+**** Index
+**** Memory
+**** Chain
+**** Agents
+**** Process
+**** Document Loader
+**** Text Splitter
+**** Embed to Vectorstore
+**** Vectorstore Retriever
+**** QA Chain
