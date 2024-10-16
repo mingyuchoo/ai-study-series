@@ -1,15 +1,16 @@
-* LangChain
+* LangChain1
 ** Component
 *** LangChain
 *** LangSmith
 *** LangGraph
 ** LangChain
+> A framework for LLM models
 *** ChatGPT
-**** 단점 -> 극복
-1. 정보 접근 제한 -> Vectorstore
-2. 토큰 제한 -> TextSplitter
-3. 환각 현상 -> Prompt
-**** 한계점 해결책
+**** Disadvantage -> Improvement
+1. Limit of latest information -> Vectorstore
+2. Limit token count -> TextSplitter
+3. Hallucination -> Prompt
+**** Resolving limitations
 1. Fine-tuning
 2. N-short Learning
 3. In-context Learning
@@ -35,4 +36,6 @@
 4. Vectorstore Retriever
 5. QA Chain
 ** LangSmith
+> Observability for LangChain framework
 ** LangGraph
+> Orchestration for LangChain framework

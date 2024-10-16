@@ -28,4 +28,9 @@
 **** No Pre-processing
 **** Multi indexing
 *** Amazon Kendra
-***
+** Evaluation
+1. python main.py --task prepare-document
+2. python main.py --task generate-raw-dataset
+3. python main.py --task ragas-formatting
+4. python main.py --task evaluate-ragas
+** Application
