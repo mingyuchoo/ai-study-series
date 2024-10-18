@@ -1,0 +1,321 @@
+* Delivery Luga
+** Process
+*** 0. Pre-requsites
+1. Install Python3.11.x (set venv) and Nodejs 22.x
+2. Install AWSCLI and AWS-SAM-CLI
+3. Set your AWS credentials and config
+4. Change all region of codebase to {your-region-id}
+*** 1. luga-infra
+**** Deploy AWS Infrastructure using CDK
+#+begin_src shell
+  cd luga-infra
+  npm install
+  npm run build
+  cdk bootstrap
+  cdk deploy --parameters projectName=luga
+#+end_src
+***** To create manually
+- Bedrock Model access
+- OpenSearch
+- S3 Bucket
+- Security Manager
+**** Check the result of deployment
+EC2 > Load balancers > {instance-name} > DNS name > (copy)
+Check running NginX in web browser with the DNS name
+*** 2. OpeanSearch
+**** Create a domain
+- Domain name: luga
+- Domain creation method: Easy create
+- Engine options: Version OpenSearch_2.11
+- Network: Public access, IPv4 only
+- Fine-grained acess control: Create master user
+- Master username: {your-opensearch-username}
+- Master password: {your-opensearch-password}
+**** Create a secret to Secrets Manager
+1. Copy OpenSearch Dashboards URL (IPv4) and Domain endpoint
+   - Opensearch Dashboards URL (IPv4): {your-opensearch-dashboard-url}
+   - Domain endpoint: {your-opensearch-domain-endpoint}
+2. AWS Secrets Manager > Secrets > Store a new secret
+   - Secret type: Other type of secret
+   - Key/value pairs
+     - endpoint: {your-opensearch-domain-endpoint}
+     - username: {your-opensearch-username}
+     - password: {your-opensearch-password}
+   - Configure secret
+     - Secret name: dev/opensearch/luga
+**** Upload dictionaries to S3 bucket
+- Amazon S3 > Buckets > {bucket-name} > luga-index/ > dictionaries/ > comound_noun.txt, synonym.txt
+**** Add Text Dictionaries of Packages
+- Amazon OpenSearch Service > Packages > Text dictionaries > Import package
+- Import package from S3 > Package
+  - Name / S3 bucket:
+    - comound-noun: {bucket-name} > luga-index/ > dictionaries/ > comound_noun.txt
+    - synonym: {bucket-name} > luga-index/ > dictionaries/ > synonym.txt
+**** Add Nori Tokenizer to OpenSearch Domain
+Amazon OpenSearch Service > Domains > {instance-name:luga} > Packages > Associate package
+- analysis-nori
+- compound-noun
+- synonym
+*** 3. luga-indexing
+**** Create `samconfig.toml`
+Copy from `samconfig.toml.template` to `samconfig.toml`
+Change `parameter_overrides` in `samconfig.toml` file
+- DatabucketName: luga-index
+- SecretName: dev/opensearch/luga
+- BedrockRegion: {your-region-id}
+- Synonyms: Amazon OpenSearch Servce > Packages > Text dictionaries > {package-id-of-synonym}
+- CompoundNouns: Amazon OpenSearch Servce > Packages > Text dictionaries > {package-id-of-compond-noun}
+**** Deploy SAM
+Create Step Functions using SAM CLI
+#+begin_src shell
+  cd luga-indexing
+  pip install -r requirements.txt
+  sam build
+  sam deploy --guided
+#+end_src
+**** Check the results
+- Step Functions > State machines > `DocumentProcessingStateMachine`
+**** Upload datasets to S3 Bucket
+- Amazon S3 > Buckets > {bucket-name} > luga-index/ > collection/ > allganize/ > public/ > *
+**** Execute step function
+- Step Functions > State machines > `DocumentProcessingStateMachine` > Start execution
+- Input - optional
+  #+begin_src json
+    {
+      "source_prefix": "luga-index/collection/allganize/public",
+      "index_name": "luga-v1"
+    }
+  #+end_src
+- Start execution
+**** Check OpenSearch Dashboard
+- Opensearch Dashboards URL (IPv4): {your-opensearch-dashboard-url}
+- Enter username/password with {your-opensearch-username}/{your-opensearch-password}
+- Home > Management > Dev Tools
+  #+begin_src
+    GET luga-v1/_search
+  #+end_src
+*** 4. luga-ui/luga-api/Phoenix locally
+**** luga-ui
+Build UI on your local machine
+#+begin_src
+  cd luga-ui
+  cp .env_test .env
+  npm install
+  npm run dev
+#+end_src
+Check the UI on your web browser at `http://localhost:5173/`
+Generate your token at `https://jwt.io/` with:
+#+begin_src json
+  {
+    "sub": "1234567890",
+    "name": "john-doe",
+    "username": "john-doe",
+    "email": "john-doe@email.com",
+    "iat": 1516239022,
+    "exp": 2516239022
+  }
+#+end_src
+Login with your fake token
+- Open developer tool in you web browser > Application > Storage > Session storage > http://localhost:5173
+  - Key: token
+  - Value: {generated-your-token}
+Change URL to `http://localhost:5173/`
+**** Arize Phoenix
+Run Phoenix docker container on your local machine
+#+begin_src shell
+  cd luga-api
+  ./phoenix-start.sh
+#+end_src
+Check the Phoenix on your web browser at `http://localhost:6006/`
+**** luga-api
+Build API on your local machine
+#+begin_src shell
+  cd luga-api
+  cp .env_test .env
+  pip install -r requirements.txt
+  ./start.sh # or .\start.ps1
+#+end_src
+Update OpenSearch Index to fix bug
+#+begin_src
+  PUT /luga-v2
+  {
+    "settings": {
+      "index": {
+          "knn": true,
+          "number_of_shards": 3,
+          "number_of_replicas": 2
+      },
+      "analysis": {
+        "tokenizer": {
+          "nori_with_dict_tokenizer": {
+              "type": "nori_tokenizer",
+              "decompound_mode": "mixed",
+              "user_dictionary": "analyzers/F68923964" // <- change to compound-none's Package ID
+          }
+        },
+        "analyzer": {
+          "nori_with_dict_analyzer": {
+            "type": "custom",
+            "tokenizer": "nori_with_dict_tokenizer",
+            "filter": [
+              "synonym_filter",
+              "nori_filter_test",
+              "nori_readingform",
+              "lowercase"
+            ]
+          }
+        },
+        "filter": {
+          "synonym_filter": {
+            "type": "synonym",
+            "synonyms_path": "analyzers/F82645833"  // <- change to synonym's Package ID
+          },
+          "nori_filter_test": {
+            "type": "nori_part_of_speech",
+            "stoptags": [
+              "E", "IC", "J", "MAG", "MAJ", "MM", "SP", "SSC",
+              "SSO", "SC", "SE", "SF", "SY", "XPN", "XR", "XSA",
+              "XSN", "XSV", "UNA", "NA", "VSV", "VA", "VV", "VCN",
+              "VCP", "VX"
+            ]
+          }
+        }
+      }
+    },
+    "mappings": {
+        "properties": {
+        "file_name": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword"
+            }
+          }
+        },
+        "chunk_text": {
+          "type": "text",
+          "analyzer": "nori_with_dict_analyzer",
+          "search_analyzer": "nori_with_dict_analyzer",
+          "fields": {
+            "keyword": {
+              "type": "keyword"
+            }
+          }
+        },
+        "chunk_embedding": {
+          "type": "knn_vector",
+          "dimension": 1024,
+          "method": {
+            "engine": "lucene",
+            "space_type": "l2",
+            "name": "hnsw",
+            "parameters": {}
+          }
+        }
+      }
+    }
+  }
+
+  POST _reindex
+  {
+    "source": {
+      "index": "luga-v1"
+    },
+    "dest": {
+      "index": "luga-v2"
+    }
+  }
+
+  GET luga-v2/_search
+#+end_src
+Insert items that needed by the luga-api to DynamoDB
+- DynamoDB > Explore items: `luga-admin-table` > Create item > JSON view
+#+begin_src json
+  {
+    "PK": {
+      "S": "DAILYCHATDETAIL"
+    },
+    "SK": {
+      "S": "ALL"
+    },
+    "AllowNum": {
+      "N": "120"
+    }
+  }
+
+  {
+    "PK": {
+      "S": "USER"
+    },
+    "SK": {
+      "S": "john-doe"  // <---- change to JWT token's name
+    },
+    "Role": {
+      "S": "ADMIN"
+    }
+  }
+
+  {
+    "PK": {
+      "S": "DAILYCHAT"
+    },
+    "SK": {
+      "S": "ALL"
+    },
+    "AllowNum": {
+      "N": "10"
+    }
+  }
+#+end_src
+Talk with Chatbot in your Luga UI
+Check the logs about the conversations in you PHoenix
+*** 5. Deploy luga-ui/luga-api/Phoenix
+**** luga-ui
+#+begin_shrc shell
+  cd luga-ui
+  cp .env .env_staging
+#+end_src
+Change ENDPOINTs to ELB A record in `.env_staging`
+#+begin_src
+  VITE_APP_API_ENDPOINT="http://<ELB-A-record>/api"
+  VITE_APP_WS_ENDPOINT="ws://<ELB-A-record>/api/ws"
+  VITE_APP_USE_STREAMING="true"
+#+end_src
+Deploy to ECR
+#+begin_src shell
+  ./deploy-docker-image.sh
+#+end_src
+**** luga-api
+#+begin_src shell
+  cd luga-api
+  ./deploy-docker-image.sh
+#+end_src
+**** luga-infra
+Change image names in `lib/luga-infra-stack.ts` in luga-infra
+#+begin_src shell
+  cd luga-infra
+  cd ./lib
+#+end_src
+#+begin_src typescript
+  // line number 150
+  image: ecs.ContainerImage.fromRegistry('<your-luga-ui-image-index-uri>'),
+  // line number 161
+  image: ecs.ContainerImage.fromRegistry('<your-luga-api-image-index-uri>'),
+#+end_src
+Re-depoly luga-infra by CDK
+#+begin_src shell
+  npm run build
+  cdk deploy
+#+end_src
+*** 6. luga-evaluation
+** Homework
+*** Integration with OAuth (Cognito+Google)
+*** Add OpenSearch to CDK
+*** Add Authentication to Phoenix
+*** Agents and Guardrails
+*** Integration with Domains
+*** Change protocol to HTTPS
+** Nice to have
+*** Upgrade Python Packages
+*** Refactoring UI/API
+*** Set ECS Autoscaling
