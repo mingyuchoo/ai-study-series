@@ -302,11 +302,28 @@ Change image names in `lib/luga-infra-stack.ts` in luga-infra
   // line number 161
   image: ecs.ContainerImage.fromRegistry('<your-luga-api-image-index-uri>'),
 #+end_src
+***** Policy Issues
+Add and create inline policy:
+IAM > Rols > LugaInfraStack-TaskRole*
+#+begin_src json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Statement1",
+      "Effect": "Allow",
+      "Action": "secretsmanager:GetSecretValue",
+      "Resource": "arn:aws:secretsmanager:eu-central-1:813990269506:secret:dev/opensearch/luga*"
+    }
+  ]
+}
+#+end_src
 Re-depoly luga-infra by CDK
 #+begin_src shell
   npm run build
   cdk deploy
 #+end_src
+**** Issue solutions
 *** 6. luga-evaluation
 ** Homework
 *** Integration with OAuth (Cognito+Google)
