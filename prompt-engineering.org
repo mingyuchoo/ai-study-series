@@ -1,7 +1,10 @@
-* Prompt Engineering
+k* Prompt Engineering
 - Prompt Engineering은 RAG, Parsing, Chunking, Embedding, Indexing을 포괄하는 상위 개념임
 - RAG, Parsing, Chunking, Embedding, Indexing 등의 기술은 효과적인 Prompt Engineering을 위해 사용됨
 ** RAG(Retrieval-Augmented Generation)
+#+CAPTION: RAG
+#+NAME:   RAG
+[[./assets/rag.png]]
 - RAG는 Parsing, Chunking, Embedding, Indexing 을 포함하는 상위 개념임
 - RAG 시스템 구현을 위해 이들 기술이 사용됨
 *** Parsing
