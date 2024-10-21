@@ -1,0 +1,34 @@
+* Prompt Engineering
+- Prompt Engineering은 RAG, Parsing, Chunking, Embedding, Indexing을 포괄하는 상위 개념임
+- RAG, Parsing, Chunking, Embedding, Indexing 등의 기술은 효과적인 Prompt Engineering을 위해 사용됨
+** RAG(Retrieval-Augmented Generation)
+- RAG는 Parsing, Chunking, Embedding, Indexing 을 포함하는 상위 개념임
+- RAG 시스템 구현을 위해 이들 기술이 사용됨
+*** Parsing
+- 텍스트를 구조화하고 의미 있는 단위로 분석하는 과정임
+- Parsing은 Chunking의 전 단계로 볼 수 있음
+*** Chunking
+- Chunking은 RAG 시스템의 한 구성 요소로, 문서들을 작은 단위로 나누는 과정임
+- Embedding과 Indexing 전에 수행되는 선행 단계임
+*** Embedding과 Indexing
+- RAG 시스템 구현의 핵심 요소임
+- Embedding과 Indexing은 성호 보완적인 관계임
+- Embedding은 텍스트를 벡터로 변환하는 과정임
+- Indexing은 이 벡터들을 효율적으로 저장하고 검색하는 방법임
+*** Retrieving
+- RAG 시스템에서 사용자 쿼리와 관련된 정보를 효과적으로 찾아내는 핵심 기술임
+- Prompt Engineering의 한 요소로 활용됨
+- Embddding과 Indexing 이후에 수행됨
+**** 작업 내용
+- 사용자의 쿼리나 프롬프트와 관련된 정보를 벡터 데이터베이스에서 검색
+- 시맨틱 검색 기술을 사용하여 질문의 의미를 파악함
+- 쿼리와 가장 관련성이 높은 문맥 정보를 추출함
+- LLM의 학습 데이터보다 최신 정보를 검색하여 LLM에 제공
+**** 기술
+1. Vector Search
+2. Sparse Retrieval
+3. Hybrid Search
+4. Encoders
+5. Indexing(Vector Index, Inverted Index)
+6. DPR(Dense Passage Retrieval)
+7. Semantic Search
